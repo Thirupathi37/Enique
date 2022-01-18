@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="dd50fbea-085d-4785-aceb-5d555e317530" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="0a242eec-4f61-452d-babe-7a4b0357f3c2" >
+		<http:request-connection host="localhost" port="8082" />
+	</http:request-config>
+	<flow name="test1Flow" doc:id="d9600b6d-2b19-4cbc-9b5e-d09e6a39ccae" >
+		<http:listener doc:name="Listener" doc:id="9a0b48b8-9ea5-42e9-8dc2-f6eebcf4d065" config-ref="HTTP_Listener_config" path="/test1">
+			<http:error-response statusCode="#[vars.httpStatus default 505]" reasonPhrase='#["Internal Server Error"]'/>
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="424c78d4-5d2e-4ea4-a4aa-afd44e610441" message='#["Start"]'/>
+		<set-payload value='#[[&#10;  {&#10;    "USERID": "11",&#10;    "DEPTID": "11DEPTID",&#10;    " DESIGNATION": "Sr_Analyst",&#10;    " DATEOFJOINING": "04-10-2021",&#10;    " SALARY": "40k",&#10;    " PREVIOUSEMPLOYER": "capG"&#10;  },&#10;  {&#10;    "USERID": "12",&#10;    "DEPTID": "12DEPTID",&#10;    " DESIGNATION": "Sr_Analyst",&#10;    " DATEOFJOINING": "04-10-2021",&#10;    " SALARY": "40k",&#10;    " PREVIOUSEMPLOYER": "capG"&#10;  },&#10;  {&#10;    "USERID": "13",&#10;    "DEPTID": "13DEPTID",&#10;    " DESIGNATION": "Sr_Analyst",&#10;    " DATEOFJOINING": "04-10-2021",&#10;    " SALARY": "40k",&#10;    " PREVIOUSEMPLOYER": "capG"&#10;  },&#10;  {&#10;    "USERID": "14",&#10;    "DEPTID": "14DEPTID",&#10;    " DESIGNATION": "Sr_Analyst",&#10;    " DATEOFJOINING": "04-10-2021",&#10;    " SALARY": "40k",&#10;    " PREVIOUSEMPLOYER": "capG"&#10;  },&#10;  {&#10;    "USERID": "11",&#10;    "FIRSTNAME": "Thiru1",&#10;    " MIDDLENAME": "B",&#10;    " LASTNAME": "Bommishetty",&#10;    " ADDRESS1": "1-5",&#10;    " ADDRESS2": "1-6",&#10;    "PHONE": "8790120632"&#10;  },&#10;  {&#10;    "USERID": "12",&#10;    "FIRSTNAME": "Thiru2",&#10;    " MIDDLENAME": "B",&#10;    " LASTNAME": "Bommishetty",&#10;    " ADDRESS1": "1-5",&#10;    " ADDRESS2": "1-6",&#10;    "PHONE": "8790120632"&#10;  },&#10;  {&#10;    "USERID": "13",&#10;    "FIRSTNAME": "Thiru3",&#10;    " MIDDLENAME": "B",&#10;    " LASTNAME": "Bommishetty",&#10;    " ADDRESS1": "1-5",&#10;    " ADDRESS2": "1-6",&#10;    "PHONE": "8790120632"&#10;  },&#10;  {&#10;    "USERID": "14",&#10;    "FIRSTNAME": "Thiru4s",&#10;    " MIDDLENAME": "B",&#10;    " LASTNAME": "Bommishetty",&#10;    " ADDRESS1": "1-5",&#10;    " ADDRESS2": "1-6",&#10;    "PHONE": "8790120632"&#10;  }&#10;]]' doc:name="Set Payload" doc:id="a926cb84-41cf-48ef-950b-47fbb4cb5d7d" />
+		<http:request method="GET" doc:name="Request" doc:id="6e0ad4bd-d240-48d0-8aff-98a3fa5d40b1" config-ref="HTTP_Request_configuration" path="/system" responseTimeout="9000000"/>
+		<logger level="INFO" doc:name="Logger" doc:id="65ff942d-c284-4bad-adea-d1dfec383495" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="89661cba-5f94-4878-b654-667cac390885" >
+				<ee:transform doc:name="Transform Message" doc:id="a24b9d7b-e786-4ca1-940a-bb5faa227da0" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"ErrorMessage": error.muleMessage.typedValue default "Expresion Error"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+		<flow name="forEach_with_BatchSize" doc:id="f4bdf228-e943-410f-aa82-17f075fc0ef4" initialState="stopped">
+		<http:listener doc:name="Listener" doc:id="3082f299-621d-4b60-b35e-c1510c76f56c" config-ref="HTTP_Listener_config" path="/test" outputMimeType="application/xml">
+		</http:listener>
+		<set-payload value='#[[&#10;  {&#10;    "USERID": "11",&#10;    "DEPTID": "11DEPTID",&#10;    " DESIGNATION": "Sr_Analyst",&#10;    " DATEOFJOINING": "04-10-2021",&#10;    " SALARY": "40k",&#10;    " PREVIOUSEMPLOYER": "capG"&#10;  },&#10;  {&#10;    "USERID": "12",&#10;    "DEPTID": "12DEPTID",&#10;    " DESIGNATION": "Sr_Analyst",&#10;    " DATEOFJOINING": "04-10-2021",&#10;    " SALARY": "40k",&#10;    " PREVIOUSEMPLOYER": "capG"&#10;  },&#10;  {&#10;    "USERID": "13",&#10;    "DEPTID": "13DEPTID",&#10;    " DESIGNATION": "Sr_Analyst",&#10;    " DATEOFJOINING": "04-10-2021",&#10;    " SALARY": "40k",&#10;    " PREVIOUSEMPLOYER": "capG"&#10;  },&#10;  {&#10;    "USERID": "14",&#10;    "DEPTID": "14DEPTID",&#10;    " DESIGNATION": "Sr_Analyst",&#10;    " DATEOFJOINING": "04-10-2021",&#10;    " SALARY": "40k",&#10;    " PREVIOUSEMPLOYER": "capG"&#10;  },&#10;  {&#10;    "USERID": "11",&#10;    "FIRSTNAME": "Thiru1",&#10;    " MIDDLENAME": "B",&#10;    " LASTNAME": "Bommishetty",&#10;    " ADDRESS1": "1-5",&#10;    " ADDRESS2": "1-6",&#10;    "PHONE": "8790120632"&#10;  },&#10;  {&#10;    "USERID": "12",&#10;    "FIRSTNAME": "Thiru2",&#10;    " MIDDLENAME": "B",&#10;    " LASTNAME": "Bommishetty",&#10;    " ADDRESS1": "1-5",&#10;    " ADDRESS2": "1-6",&#10;    "PHONE": "8790120632"&#10;  },&#10;  {&#10;    "USERID": "13",&#10;    "FIRSTNAME": "Thiru3",&#10;    " MIDDLENAME": "B",&#10;    " LASTNAME": "Bommishetty",&#10;    " ADDRESS1": "1-5",&#10;    " ADDRESS2": "1-6",&#10;    "PHONE": "8790120632"&#10;  },&#10;  {&#10;    "USERID": "14",&#10;    "FIRSTNAME": "Thiru4s",&#10;    " MIDDLENAME": "B",&#10;    " LASTNAME": "Bommishetty",&#10;    " ADDRESS1": "1-5",&#10;    " ADDRESS2": "1-6",&#10;    "PHONE": "8790120632"&#10;  }&#10;]]' doc:name="Set Payload" doc:id="31022d31-a135-4aaf-b3a5-efb7de633f51" />
+		<logger level="INFO" doc:name="Logger" doc:id="2dbd5dab-f07b-49e7-a313-dd3603ae46bb" message="#[payload]"/>
+		<foreach doc:name="For Each" doc:id="b38daf14-6753-464d-88f3-d3c5ad38a15e" batchSize="2">
+			<logger level="INFO" doc:name="Logger" doc:id="535cdfd6-be9d-4f78-87ac-19d02ed22485" message="#[payload]" />
+		</foreach>
+		<logger level="INFO" doc:name="Logger" doc:id="13f2ccb3-2da9-4b07-85ee-38e4fec257ca" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="1cd7583d-ae95-4cfe-98bf-004f6220b047" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

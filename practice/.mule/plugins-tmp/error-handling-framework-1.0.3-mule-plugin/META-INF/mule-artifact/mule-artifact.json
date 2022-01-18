@@ -1,0 +1,25 @@
+{
+  "configs": [
+    "error-handling-framework.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "82d9d92f-678c-439b-85f0-8a8fc22a1d46:error-handling-framework:1.0.3",
+  "minMuleVersion": "4.4.0",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "application-types.xml",
+        "error-handling-framework.xml",
+        "log4j2.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}
