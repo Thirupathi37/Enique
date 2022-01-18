@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain:mule-domain
+        xmlns:os="http://www.mulesoft.org/schema/mule/os"
+        xmlns:db="http://www.mulesoft.org/schema/mule/db"
+        xmlns:http="http://www.mulesoft.org/schema/mule/http"
+        xmlns="http://www.mulesoft.org/schema/mule/core"
+        xmlns:domain="http://www.mulesoft.org/schema/mule/ee/domain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+               http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+               http://www.mulesoft.org/schema/mule/ee/domain http://www.mulesoft.org/schema/mule/ee/domain/current/mule-domain-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ae3e3a6a-4ae0-44a6-84b6-380e6d2cee1c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="a661332d-1083-43d5-98e1-cc2d6468a9de" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Btr@1234" database="emp" />
+	</db:config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="06dfd9b9-2904-4f7f-ae80-8b0843c62738" maxEntries="1000" entryTtl="15" entryTtlUnit="DAYS" expirationIntervalUnit="SECONDS" />
+
+
+    <!-- configure here resource to be shared within the domain -->
+
+</domain:mule-domain>
